@@ -1,4 +1,10 @@
 ﻿using EF.Generic_Query.API.Data;
+using EF.Generic_Query.API.Data.Repositories;
+using EF.Generic_Query.API.Data.Repositories.Interfaces;
+using EF.Generic_Query.API.Data.Uow;
+using EF.Generic_Query.API.Data.Uow.Interfaces;
+using EF.Generic_Query.API.Services;
+using EF.Generic_Query.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace EF.Generic_Query.API
@@ -18,6 +24,11 @@ namespace EF.Generic_Query.API
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+
+            services.AddScoped<AppDbContext>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICategoryServices, CategoryService>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
         }
 
         public void Configure(WebApplication app, IWebHostEnvironment env)
@@ -28,7 +39,7 @@ namespace EF.Generic_Query.API
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
