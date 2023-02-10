@@ -1,7 +1,9 @@
 ﻿using EF.Generic_Query.API.Data.Repositories.Pagination;
 using EF.Generic_Query.API.Models;
 using EF.Generic_Query.API.Services.Interfaces;
+using IronPdf;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EF.Generic_Query.API.Controllers
 {
@@ -33,5 +35,16 @@ namespace EF.Generic_Query.API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Category>> Delete(Guid id) =>
             Ok(await _categoryServices.Delete(id).ConfigureAwait(false));
+
+        [HttpGet("pdf")]
+        public async Task<IActionResult> ExportFile()
+        {
+            var renderer = new ChromePdfRenderer();
+
+            var pdf = await renderer.RenderHtmlAsPdfAsync("<h1>Hello World</h1>").ConfigureAwait(false);
+            pdf.SaveAs("output.pdf");
+            
+            return File(pdf.Stream.ToArray(), "application/pdf", "output.pdf");
+        }
     }
 }
